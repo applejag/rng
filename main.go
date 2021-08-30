@@ -22,9 +22,21 @@ This program comes with ABSOLUTELY NO WARRANTY; for details type 'rnd --license-
 This is free software, and you are welcome to redistribute it
 under certain conditions; type '--license-c' for details.
 
-rnd                 random number from 0 [inclusive] to 10 [exclusive]
-rnd <max>           random number from 0 [inclusive] to <max> [exclusive]
-rnd <min> <max>     random number from <min> [inclusive] to <max> [exclusive]
+Randomizes an integer value by default, but random floats, times, and durations
+can be used instead.
+
+rnd                        // random integer [0 - 10)
+rnd 15                     // random integer [0 - 15)
+rnd 5 15                   // random integer [5 - 15)
+rnd 15.0                   // random float [0 - 15)
+rnd 1.5e2                  // random float [0 - 15)
+rnd 5 1.5e2                // random float [5 - 15)
+rnd 15s                    // random duration [0s - 15s)
+rnd 5s 15s                 // random duration [5s - 15s)
+rnd 10:50                  // random time [now - 10:50)
+rnd 10:30 10:15            // random time [15:30 - 10:15]
+rnd 2038-01-19             // random date [now - 2038-01-19)
+rnd 2021-08-30 2038-01-19  // random date [2021-08-30 - 2038-01-19)
 
 Flags:
 `, version)
@@ -63,10 +75,12 @@ Flags:
 		os.Exit(0)
 	}
 
+	var parser = defaultParser
+	var rngRange randomRange
+
 	switch pflag.NArg() {
 	case 0:
-		flags.min = 0
-		flags.max = 10
+		rngRange = parser.Default()
 	case 1:
 		flags.min = 0
 		var err error
@@ -112,10 +126,6 @@ Flags:
 		)
 		fmt.Println(min + rand.Int63n(max-min))
 	}
-}
-
-func lerpFloat64(a, b, t float64) float64 {
-	return a + (b-a)*t
 }
 
 func seedRand() error {
