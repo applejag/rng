@@ -17,16 +17,9 @@ func (p randomFloat) ParseUpper(value string) (randomUpper, error) {
 	return p, err
 }
 
-func (p randomFloat) Default() randomRange {
-	return randomFloat{
-		upper: 10,
-		lower: 0,
-	}
-}
-
 func (p randomFloat) ParseLower(value string) (randomRange, error) {
 	var err error
-	p.lower, err = strconv.ParseFloat(value, 10, 64)
+	p.lower, err = strconv.ParseFloat(value, 64)
 	return p, err
 }
 
