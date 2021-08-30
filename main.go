@@ -12,12 +12,15 @@ import (
 )
 
 const (
-	version = "0.1.0"
+	version = "v0.1.0"
 )
 
 func main() {
 	pflag.Usage = func() {
-		fmt.Fprintf(os.Stderr, `rnd %s
+		fmt.Fprintf(os.Stderr, `rnd %s  Copyright (C) 2021  Kalle Jillheden
+This program comes with ABSOLUTELY NO WARRANTY; for details type 'rnd --license-w'
+This is free software, and you are welcome to redistribute it
+under certain conditions; type '--license-c' for details.
 
 rnd                 random number from 0 [inclusive] to 10 [exclusive]
 rnd <max>           random number from 0 [inclusive] to <max> [exclusive]
@@ -29,20 +32,34 @@ Flags:
 	}
 
 	var flags struct {
-		min      float64
-		max      float64
-		useFloat bool
-		help     bool
-		debug    bool
+		min                   float64
+		max                   float64
+		useFloat              bool
+		showHelp              bool
+		showDebug             bool
+		showLicenseWarranty   bool
+		showLicenseConditions bool
 	}
 
 	pflag.BoolVarP(&flags.useFloat, "use-float", "f", false, "enables floating point values (ex: 0.25)")
-	pflag.BoolVarP(&flags.help, "help", "h", false, "show this help text")
-	pflag.BoolVarP(&flags.debug, "debug", "d", false, "show additional info")
+	pflag.BoolVarP(&flags.showHelp, "help", "h", false, "show this help text")
+	pflag.BoolVarP(&flags.showDebug, "debug", "d", false, "show additional info")
+	pflag.BoolVarP(&flags.showLicenseConditions, "license-c", "", false, "show license conditions")
+	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
 	pflag.Parse()
 
-	if flags.help {
+	if flags.showHelp {
 		pflag.Usage()
+		os.Exit(0)
+	}
+
+	if flags.showLicenseConditions {
+		fmt.Println(licenseConditions)
+		os.Exit(0)
+	}
+
+	if flags.showLicenseWarranty {
+		fmt.Println(licenseWarranty)
 		os.Exit(0)
 	}
 
@@ -77,7 +94,7 @@ Flags:
 		os.Exit(1)
 	}
 
-	if flags.debug {
+	if flags.showDebug {
 		fmt.Println("min:", flags.min)
 		fmt.Println("max:", flags.max)
 		fmt.Println("use float:", flags.useFloat)
