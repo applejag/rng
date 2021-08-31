@@ -1,4 +1,4 @@
-module github.com/jilleJr/rnd
+module github.com/jilleJr/rng
 
 go 1.16
 
