@@ -1,4 +1,4 @@
-# rnd - Random number generator CLI
+# rng - Random number generator CLI
 
 I needed a random number generator. I wrote this super-simple tool.
 
