@@ -1,4 +1,4 @@
-package guid
+package uuid
 
 import (
 	"errors"
@@ -16,14 +16,14 @@ const mask6Bytes uint64 = 0x0000FFFFFFFFFFFF
 const mask4Bytes uint64 = 0x00000000FFFFFFFF
 const mask2Bytes uint64 = 0x000000000000FFFF
 
-type GUID struct {
+type UUID struct {
 	int uint128.Uint128
 }
 
-var Min = GUID{}
-var Max = GUID{int: uint128.Uint128{Lo: math.MaxUint64, Hi: math.MaxUint64}}
+var Min = UUID{}
+var Max = UUID{int: uint128.Uint128{Lo: math.MaxUint64, Hi: math.MaxUint64}}
 
-func (guid GUID) String() string {
+func (guid UUID) String() string {
 	var (
 		timeLow          = (guid.int.Hi >> 32) & mask4Bytes
 		timeMid          = (guid.int.Hi >> 16) & mask2Bytes
@@ -39,32 +39,32 @@ func (guid GUID) String() string {
 		node)
 }
 
-func (guid GUID) GreaterThan(value GUID) bool {
+func (guid UUID) GreaterThan(value UUID) bool {
 	return guid.int.Cmp(value.int) > 0
 }
 
-func NewRandom() GUID {
+func NewRandom() UUID {
 	var randBytes [16]byte
 	if _, err := rand.Read(randBytes[:]); err != nil {
 		panic(err)
 	}
-	return GUID{int: uint128.FromBytes(randBytes[:])}
+	return UUID{int: uint128.FromBytes(randBytes[:])}
 }
 
-func NewRandomRange(min, max GUID) GUID {
+func NewRandomRange(min, max UUID) UUID {
 	diffInt128 := max.int.Sub(min.int)
 	fullRandomInt128 := NewRandom().int
 	rangedRandomInt128 := fullRandomInt128.Mod(diffInt128)
 	randomInt128 := min.int.Add(rangedRandomInt128)
-	return GUID{int: randomInt128}
+	return UUID{int: randomInt128}
 }
 
-func Parse(s string) (GUID, error) {
+func Parse(s string) (UUID, error) {
 	if len(s) != 36 {
-		return GUID{}, ErrInvalid
+		return UUID{}, ErrInvalid
 	}
 	if s[8] != '-' || s[13] != '-' || s[18] != '-' || s[23] != '-' {
-		return GUID{}, ErrInvalid
+		return UUID{}, ErrInvalid
 	}
 	var err error
 	var (
@@ -75,21 +75,21 @@ func Parse(s string) (GUID, error) {
 		node             uint64
 	)
 	if timeLow, err = strconv.ParseUint(s[0:8], 16, 32); err != nil {
-		return GUID{}, err
+		return UUID{}, err
 	}
 	if timeMid, err = strconv.ParseUint(s[9:13], 16, 16); err != nil {
-		return GUID{}, err
+		return UUID{}, err
 	}
 	if timeHiAndVersion, err = strconv.ParseUint(s[14:18], 16, 16); err != nil {
-		return GUID{}, err
+		return UUID{}, err
 	}
 	if clock, err = strconv.ParseUint(s[19:23], 16, 16); err != nil {
-		return GUID{}, err
+		return UUID{}, err
 	}
 	if node, err = strconv.ParseUint(s[24:36], 16, 48); err != nil {
-		return GUID{}, err
+		return UUID{}, err
 	}
-	var g = GUID{
+	var g = UUID{
 		int: uint128.Uint128{
 			Hi: timeLow<<32 + timeMid<<16 + timeHiAndVersion,
 			Lo: clock<<48 + node,
