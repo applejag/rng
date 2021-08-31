@@ -2,10 +2,16 @@
 
 I needed a random number generator. I wrote this super-simple tool.
 
+## Install
+
+```console
+$ go install github.com/jilleJr/rng
+```
+
 ## Usage
 
 ```console
-$ rnd --help
+$ rng --help
 rng v0.2.0  Copyright (C) 2021  Kalle Jillheden
 This program comes with ABSOLUTELY NO WARRANTY; for details type 'rng --license-w'
 This is free software, and you are welcome to redistribute it
