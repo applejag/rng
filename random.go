@@ -28,6 +28,7 @@ var parsers = []randomParser{
 	randomDuration{},
 	randomTime{},
 	randomDate{},
+	randomGUID{},
 }
 
 var defaultParser randomParser = randomInt{}
