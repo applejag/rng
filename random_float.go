@@ -11,10 +11,20 @@ type randomFloat struct {
 	lower float64
 }
 
+func (p randomFloat) Name() string {
+	return "float"
+}
+
 func (p randomFloat) ParseUpper(value string) (randomUpper, error) {
 	var err error
 	p.upper, err = strconv.ParseFloat(value, 64)
 	return p, err
+}
+
+func (p randomFloat) Default() randomRange {
+	p.upper = 10
+	p.lower = 0
+	return p
 }
 
 func (p randomFloat) ParseLower(value string) (randomRange, error) {

@@ -8,6 +8,8 @@ var errMinCannotBeGreaterThanMax = errors.New("<min> cannot be greater than <max
 
 type randomParser interface {
 	ParseUpper(value string) (randomUpper, error)
+	Default() randomRange
+	Name() string
 }
 
 type randomUpper interface {

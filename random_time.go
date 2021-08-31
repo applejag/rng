@@ -17,10 +17,21 @@ type randomTime struct {
 	layout timeLayout
 }
 
+func (p randomTime) Name() string {
+	return "time"
+}
+
 func (p randomTime) ParseUpper(value string) (randomUpper, error) {
 	var err error
 	p.upper, p.layout, err = parseTimeNicely(value)
 	return p, err
+}
+
+func (p randomTime) Default() randomRange {
+	p.upper = time.Date(2006, 01, 03, 00, 00, 00, 00, time.UTC)
+	p.lower = time.Date(2006, 01, 02, 00, 00, 00, 00, time.UTC)
+	p.layout = timeLayoutDefault
+	return p
 }
 
 func (p randomTime) ParseLower(value string) (randomRange, error) {
@@ -44,8 +55,10 @@ func (p randomTime) PrintRandomValue() {
 	fmt.Println(p.lower.Add(rndDiff).Format(p.layout.printLayout))
 }
 
+var timeLayoutDefault = timeLayout{"15:4", "15:04"}
+
 var timeLayouts = []timeLayout{
-	{"15:4", "15:04"},
+	timeLayoutDefault,
 	{"15:4:5", "15:04:05"},
 	{"15:4:5.999999999", "15:04:05.999999999"},
 	{"3:4PM", "3:04PM"},

@@ -12,10 +12,22 @@ type randomDate struct {
 	layout timeLayout
 }
 
+func (p randomDate) Name() string {
+	return "date"
+}
+
 func (p randomDate) ParseUpper(value string) (randomUpper, error) {
 	var err error
 	p.upper, p.layout, err = parseDateNicely(value)
 	return p, err
+}
+
+func (p randomDate) Default() randomRange {
+	year := time.Now().Year()
+	p.upper = time.Date(year+1, 01, 01, 00, 00, 00, 00, time.UTC)
+	p.lower = time.Date(year, 01, 01, 00, 00, 00, 00, time.UTC)
+	p.layout = dateLayoutDefault
+	return p
 }
 
 func (p randomDate) ParseLower(value string) (randomRange, error) {
@@ -39,6 +51,7 @@ func (p randomDate) PrintRandomValue() {
 	fmt.Println(p.lower.Add(rndDiff).Format(p.layout.printLayout))
 }
 
+var dateLayoutDefault = timeLayout{"2006-1-2", "2006-01-02"}
 var dateLayouts = []timeLayout{
 	{"2006-1-2", "2006-01-02"},
 	{"6-1-2", "2006-01-02"},

@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
 
 const (
-	version = "v0.2.0"
+	version = "v0.3.0-rc"
 )
 
 func main() {
@@ -24,9 +25,9 @@ under certain conditions; type '--license-c' for details.
 Randomizes an integer value by default, but random floats, times, and durations
 can be used instead.
 
-rng                        // random integer [0 - 10)
-rng 15                     // random integer [0 - 15)
-rng 5 15                   // random integer [5 - 15)
+rng                        // random int [0 - 10)
+rng 15                     // random int [0 - 15)
+rng 5 15                   // random int [5 - 15)
 rng 15.0                   // random float [0 - 15)
 rng 1.5e2                  // random float [0 - 15)
 rng 5 1.5e2                // random float [5 - 15)
@@ -43,6 +44,7 @@ Flags:
 	}
 
 	var flags struct {
+		parserName            string
 		showHelp              bool
 		showDebug             bool
 		showLicenseWarranty   bool
@@ -53,6 +55,7 @@ Flags:
 	pflag.BoolVarP(&flags.showDebug, "debug", "d", false, "show additional info")
 	pflag.BoolVarP(&flags.showLicenseConditions, "license-c", "", false, "show license conditions")
 	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
+	pflag.StringVarP(&flags.parserName, "parser", "p", "auto", "force parser")
 	pflag.Parse()
 
 	if flags.showHelp {
@@ -72,42 +75,89 @@ Flags:
 
 	var rndRange randomRange
 
-	switch pflag.NArg() {
-	case 0:
-		rndRange = defaultRandomRange
-	case 1:
-		var argUpper = pflag.Arg(0)
-		var rndUpper randomUpper
-		var err error
-		for _, p := range parsers {
-			rndUpper, err = p.ParseUpper(argUpper)
-			if err == nil {
+	if flags.parserName != "auto" {
+		var randomType = strings.TrimSpace(strings.ToLower(flags.parserName))
+		var rndParser randomParser
+		for _, parser := range parsers {
+			if parser.Name() == randomType {
+				rndParser = parser
 				break
 			}
 		}
-		if err != nil || rndUpper == nil {
-			fmt.Println("err: failed to find matching format")
+		if rndParser == nil {
+			fmt.Println(`err: for "-p, --parser" flag: no parser was matched:`, randomType)
+			fmt.Println("Available parsers:")
+			for _, parser := range parsers {
+				fmt.Println("-", parser.Name())
+			}
 			os.Exit(2)
 		}
-		rndRange = rndUpper.DefaultLower()
-	case 2:
-		var argLower = pflag.Arg(0)
-		var argUpper = pflag.Arg(1)
-		var rndUpper randomUpper
-		var err error
-		for _, p := range parsers {
-			rndUpper, err = p.ParseUpper(argUpper)
-			if err != nil {
-				continue
+		switch pflag.NArg() {
+		case 0:
+			rndRange = rndParser.Default()
+		case 1:
+			var argUpper = pflag.Arg(0)
+			var rndUpper randomUpper
+			var err error
+			rndUpper, err = rndParser.ParseUpper(argUpper)
+			if err == nil {
+				fmt.Println("err: failed to parse <max>:", err)
+				os.Exit(2)
+			}
+			rndRange = rndUpper.DefaultLower()
+		case 2:
+			var argLower = pflag.Arg(0)
+			var argUpper = pflag.Arg(1)
+			var err error
+			rndUpper, err := rndParser.ParseUpper(argUpper)
+			if err == nil {
+				fmt.Println("err: failed to parse <max>:", err)
+				os.Exit(2)
 			}
 			rndRange, err = rndUpper.ParseLower(argLower)
 			if err == nil {
-				break
+				fmt.Println("err: failed to parse <min>:", err)
+				os.Exit(2)
 			}
 		}
-		if err != nil || rndRange == nil {
-			fmt.Println("err: failed to find matching format")
-			os.Exit(2)
+	} else {
+		switch pflag.NArg() {
+		case 0:
+			rndRange = defaultRandomRange
+		case 1:
+			var argUpper = pflag.Arg(0)
+			var rndUpper randomUpper
+			var err error
+			for _, p := range parsers {
+				rndUpper, err = p.ParseUpper(argUpper)
+				if err == nil {
+					break
+				}
+			}
+			if err != nil || rndUpper == nil {
+				fmt.Println("err: failed to find matching format")
+				os.Exit(2)
+			}
+			rndRange = rndUpper.DefaultLower()
+		case 2:
+			var argLower = pflag.Arg(0)
+			var argUpper = pflag.Arg(1)
+			var rndUpper randomUpper
+			var err error
+			for _, p := range parsers {
+				rndUpper, err = p.ParseUpper(argUpper)
+				if err != nil {
+					continue
+				}
+				rndRange, err = rndUpper.ParseLower(argLower)
+				if err == nil {
+					break
+				}
+			}
+			if err != nil || rndRange == nil {
+				fmt.Println("err: failed to find matching format")
+				os.Exit(2)
+			}
 		}
 	}
 

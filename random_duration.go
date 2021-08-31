@@ -11,10 +11,20 @@ type randomDuration struct {
 	lower time.Duration
 }
 
+func (p randomDuration) Name() string {
+	return "duration"
+}
+
 func (p randomDuration) ParseUpper(value string) (randomUpper, error) {
 	var err error
 	p.upper, err = time.ParseDuration(value)
 	return p, err
+}
+
+func (p randomDuration) Default() randomRange {
+	p.lower = 0
+	p.upper = 10 * time.Second
+	return p
 }
 
 func (p randomDuration) ParseLower(value string) (randomRange, error) {

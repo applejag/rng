@@ -11,6 +11,10 @@ type randomInt struct {
 	lower int64
 }
 
+func (p randomInt) Name() string {
+	return "int"
+}
+
 func (p randomInt) ParseUpper(value string) (randomUpper, error) {
 	var err error
 	p.upper, err = strconv.ParseInt(value, 10, 64)
@@ -18,10 +22,9 @@ func (p randomInt) ParseUpper(value string) (randomUpper, error) {
 }
 
 func (p randomInt) Default() randomRange {
-	return randomInt{
-		upper: 10,
-		lower: 0,
-	}
+	p.upper = 10
+	p.lower = 0
+	return p
 }
 
 func (p randomInt) ParseLower(value string) (randomRange, error) {
