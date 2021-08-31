@@ -4,8 +4,10 @@ I needed a random number generator. I wrote this super-simple tool.
 
 ## Install
 
+Requires Go v1.16+: <https://golang.org/>
+
 ```console
-$ go install github.com/jilleJr/rng
+$ go install github.com/jilleJr/rng@latest
 ```
 
 ## Usage
