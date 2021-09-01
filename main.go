@@ -152,7 +152,7 @@ Flags:
 			var rndUpper randomUpper
 			var err error
 			rndUpper, err = rndParser.ParseUpper(argUpper)
-			if err == nil {
+			if err != nil {
 				fmt.Println("err: failed to parse <max>:", err)
 				os.Exit(2)
 			}
@@ -162,12 +162,12 @@ Flags:
 			var argUpper = pflag.Arg(1)
 			var err error
 			rndUpper, err := rndParser.ParseUpper(argUpper)
-			if err == nil {
+			if err != nil {
 				fmt.Println("err: failed to parse <max>:", err)
 				os.Exit(2)
 			}
 			rndRange, err = rndUpper.ParseLower(argLower)
-			if err == nil {
+			if err != nil {
 				fmt.Println("err: failed to parse <min>:", err)
 				os.Exit(2)
 			}
