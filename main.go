@@ -51,6 +51,7 @@ Flags:
 		showDebug             bool
 		showLicenseWarranty   bool
 		showLicenseConditions bool
+		numberOfRandoms       uint
 	}
 
 	pflag.BoolVarP(&flags.showHelp, "help", "h", false, "show this help text")
@@ -58,6 +59,7 @@ Flags:
 	pflag.BoolVarP(&flags.showLicenseConditions, "license-c", "", false, "show license conditions")
 	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
 	pflag.StringVarP(&flags.parserName, "parser", "p", "auto", "force parser")
+	pflag.UintVarP(&flags.numberOfRandoms, "count", "n", 1, "number of random values to output")
 	pflag.Parse()
 
 	if flags.showHelp {
@@ -75,8 +77,6 @@ Flags:
 		os.Exit(0)
 	}
 
-	seedRand()
-
 	var rndRange randomRange
 	var parserName = strings.TrimSpace(strings.ToLower(flags.parserName))
 
@@ -86,7 +86,7 @@ Flags:
 			fmt.Println("err: the 'arg' parser needs at least one non-flag argument")
 			os.Exit(2)
 		}
-		fmt.Println(pflag.Arg(rand.Intn(pflag.NArg())))
+		rndRange = randomArg{}
 	case "auto":
 		switch pflag.NArg() {
 		case 0:
@@ -172,12 +172,14 @@ Flags:
 		}
 	}
 
-	if rndRange != nil {
-		if rndRange.IsLowerLargerThanUpper() {
-			fmt.Println("err: <min> cannot be greater than <max>")
-			os.Exit(1)
-		}
+	if rndRange.IsLowerLargerThanUpper() {
+		fmt.Println("err: <min> cannot be greater than <max>")
+		os.Exit(1)
+	}
 
+	seedRand()
+
+	for i := uint(0); i < flags.numberOfRandoms; i++ {
 		rndRange.PrintRandomValue()
 	}
 }
