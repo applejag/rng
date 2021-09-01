@@ -48,7 +48,7 @@ func (p randomFloat) PrintRandomValue(format string) error {
 		fmt.Println(value)
 		return nil
 	}
-	fmtFormat, hasFormat := intFormats[format]
+	fmtFormat, hasFormat := floatFormats[format]
 	if hasFormat {
 		fmt.Printf(fmtFormat, value)
 		return nil
