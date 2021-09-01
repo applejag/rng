@@ -49,10 +49,24 @@ func (p randomTime) IsLowerLargerThanUpper() bool {
 	return p.lower.After(p.upper)
 }
 
-func (p randomTime) PrintRandomValue() {
+func (p randomTime) PrintRandomValue(format string) error {
 	diffInt := int64(p.upper.Sub(p.lower))
 	rndDiff := time.Duration(rand.Int63n(diffInt))
-	fmt.Println(p.lower.Add(rndDiff).Format(p.layout.printLayout))
+	rndTime := p.lower.Add(rndDiff)
+	if format == "" {
+		fmt.Println(rndTime.Format(p.layout.printLayout))
+	} else {
+		fmt.Println(rndTime.Format(format))
+	}
+	return nil
+}
+
+func (p randomTime) PrintFormatsHelp() {
+	fmt.Println(`Formats for time parser:
+  Any Go time format https://pkg.go.dev/time#pkg-constants
+  Such as:
+  --format 15h04m          // ex: 19h33m
+  --format 3PM             // ex: 7PM`)
 }
 
 var timeLayoutDefault = timeLayout{"15:4", "15:04"}

@@ -42,6 +42,39 @@ func (p randomInt) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomInt) PrintRandomValue() {
-	fmt.Println(p.lower + rand.Int63n(p.upper-p.lower))
+func (p randomInt) PrintRandomValue(format string) error {
+	var value = p.lower + rand.Int63n(p.upper-p.lower)
+	if format == "" {
+		fmt.Println(value)
+		return nil
+	}
+	fmtFormat, hasFormat := intFormats[format]
+	if hasFormat {
+		fmt.Printf(fmtFormat, value)
+		return nil
+	}
+	return errInvalidFormat
+}
+
+func (p randomInt) PrintFormatsHelp() {
+	fmt.Println(`Formats for int parser:
+  --format x               // hexadecimal, ex: c0ffee
+  --format X               // hexadecimal, ex: C0FFEE
+  --format 0x              // hexadeciaml with prefix, ex: 0xc0ffee
+  --format 0X              // hexadeciaml with prefix, ex: 0xC0FFEE
+  --format b               // binary, ex: 110000001111111111101110
+  --format 0b              // binary with prefix, ex: 0b110000001111111111101110
+  --format o               // octal, ex: 60177756
+  --format 0o              // octal with prefix, ex: 0o60177756`)
+}
+
+var intFormats = map[string]string{
+	"x":  "%x\n",
+	"0x": "%#x\n",
+	"X":  "%X\n",
+	"0X": "%#X\n",
+	"b":  "%b\n",
+	"0b": "%#b\n",
+	"o":  "%o\n",
+	"0o": "%O\n",
 }

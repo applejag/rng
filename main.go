@@ -38,7 +38,7 @@ rng 10:30 10:15            // random time [15:30 - 10:15]
 rng 2038-01-19             // random date [now - 2038-01-19)
 rng 2021-08-30 2038-01-19  // random date [2021-08-30 - 2038-01-19)
 rng 123e4567-e89b-12d3-a456-426614174000 // random UUID [00000000-0000-0000-0000-000000000000 - 123e4567-e89b-12d3-a456-426614174000)
-rng -p arg foo bar moo boo // random arg [arg1, arg2, ..., argN]
+rng -p arg arg1 arg2 ... argN // random arg [arg1, arg2, ..., argN]
 
 Flags:
 `, version)
@@ -47,11 +47,12 @@ Flags:
 
 	var flags struct {
 		parserName            string
+		printFormat           string
+		numberOfRandoms       uint
 		showHelp              bool
 		showDebug             bool
 		showLicenseWarranty   bool
 		showLicenseConditions bool
-		numberOfRandoms       uint
 	}
 
 	pflag.BoolVarP(&flags.showHelp, "help", "h", false, "show this help text")
@@ -59,6 +60,7 @@ Flags:
 	pflag.BoolVarP(&flags.showLicenseConditions, "license-c", "", false, "show license conditions")
 	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
 	pflag.StringVarP(&flags.parserName, "parser", "p", "auto", "force parser")
+	pflag.StringVarP(&flags.printFormat, "format", "f", "", "use custom format")
 	pflag.UintVarP(&flags.numberOfRandoms, "count", "n", 1, "number of random values to output")
 	pflag.Parse()
 
@@ -180,7 +182,11 @@ Flags:
 	seedRand()
 
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
-		rndRange.PrintRandomValue()
+		if err := rndRange.PrintRandomValue(flags.printFormat); err != nil {
+			fmt.Println("err:", err)
+			rndRange.PrintFormatsHelp()
+			os.Exit(1)
+		}
 	}
 }
 

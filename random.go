@@ -5,6 +5,7 @@ import (
 )
 
 var errMinCannotBeGreaterThanMax = errors.New("<min> cannot be greater than <max>")
+var errInvalidFormat = errors.New("invalid parser printing format")
 
 type randomParser interface {
 	ParseUpper(value string) (randomUpper, error)
@@ -19,7 +20,8 @@ type randomUpper interface {
 
 type randomRange interface {
 	IsLowerLargerThanUpper() bool
-	PrintRandomValue()
+	PrintRandomValue(format string) error
+	PrintFormatsHelp()
 }
 
 var parsers = []randomParser{

@@ -45,10 +45,24 @@ func (p randomDate) IsLowerLargerThanUpper() bool {
 	return p.lower.After(p.upper)
 }
 
-func (p randomDate) PrintRandomValue() {
+func (p randomDate) PrintRandomValue(format string) error {
 	diffInt := int64(p.upper.Sub(p.lower))
 	rndDiff := time.Duration(rand.Int63n(diffInt))
-	fmt.Println(p.lower.Add(rndDiff).Format(p.layout.printLayout))
+	rndDate := p.lower.Add(rndDiff)
+	if format == "" {
+		fmt.Println(rndDate.Format(p.layout.printLayout))
+	} else {
+		fmt.Println(rndDate.Format(format))
+	}
+	return nil
+}
+
+func (p randomDate) PrintFormatsHelp() {
+	fmt.Println(`Formats for date parser:
+  Any Go time format https://pkg.go.dev/time#pkg-constants
+  Such as:
+  --format 2006.01.02      // ex: 2021.09.30
+  --format 2006            // ex: 2021`)
 }
 
 var dateLayoutDefault = timeLayout{"2006-1-2", "2006-01-02"}

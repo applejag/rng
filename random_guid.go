@@ -45,15 +45,52 @@ func (p randomUUID) IsLowerLargerThanUpper() bool {
 	return p.lower.GreaterThan(p.upper)
 }
 
-func (p randomUUID) PrintRandomValue() {
-	switch p.format {
-	case uuidFormatGUID:
-		fmt.Printf("{%s}\n", uuid.NewRandomRange(p.lower, p.upper))
-	case uuidFormatURN:
-		fmt.Printf("urn:uuid:%s\n", uuid.NewRandomRange(p.lower, p.upper))
+func (p randomUUID) PrintRandomValue(format string) error {
+	var value = uuid.NewRandomRange(p.lower, p.upper)
+	switch format {
+	case "":
+		switch p.format {
+		case uuidFormatGUID:
+			fmt.Printf("{%s}\n", value)
+		case uuidFormatURN:
+			fmt.Printf("urn:uuid:%s\n", value)
+		default:
+			fmt.Println(value)
+		}
+	case "uuid":
+		fmt.Println(value)
+	case "UUID":
+		fmt.Println(strings.ToUpper(value.String()))
+	case "urn":
+		fmt.Printf("urn:uuid:%s\n", value)
+	case "URN":
+		fmt.Printf("URN:UUID:%s\n", strings.ToUpper(value.String()))
+	case "guid":
+		fmt.Printf("{%s}\n", value)
+	case "GUID":
+		fmt.Printf("{%s}\n", strings.ToUpper(value.String()))
 	default:
-		fmt.Println(uuid.NewRandomRange(p.lower, p.upper))
+		return errInvalidFormat
 	}
+	return nil
+}
+
+func (p randomUUID) PrintFormatsHelp() {
+	fmt.Println(`Formats for UUID parser:
+  --format uuid            // UUID, ex:
+                           //  123e4567-e89b-12d3-a456-426614174000
+  --format UUID            // UUID, ex:
+                           //  123E4567-E89B-12D3-A456-426614174000
+
+  --format urn             // Uniform Resource Name, ex:
+                           //  urn:uuid:123e4567-e89b-12d3-a456-426614174000
+  --format URN             // Uniform Resource Name, ex:
+                           //  URN:UUID:123E4567-E89B-12D3-A456-426614174000
+
+  --format GUID            // Microsoft GUID, ex:
+                           //  {123E4567-E89B-12D3-A456-426614174000}
+  --format guid            // Microsoft GUID, ex:
+                           //  {123e4567-e89b-12d3-a456-426614174000}`)
 }
 
 type uuidFormat byte

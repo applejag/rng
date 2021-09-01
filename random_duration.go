@@ -42,8 +42,42 @@ func (p randomDuration) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomDuration) PrintRandomValue() {
+func (p randomDuration) PrintRandomValue(format string) error {
 	upperInt := int64(p.upper)
 	lowerInt := int64(p.lower)
-	fmt.Println(p.lower + time.Duration(rand.Int63n(upperInt-lowerInt)))
+	rndDuration := p.lower + time.Duration(rand.Int63n(upperInt-lowerInt))
+	switch format {
+	case "":
+		fmt.Println(rndDuration)
+	case "ns":
+		fmt.Println(int64(rndDuration))
+	case "us":
+		const divNanoToMicro = 1000
+		fmt.Println(int64(rndDuration) / divNanoToMicro)
+	case "ms":
+		const divNanoToMilli = 1000 * 1000
+		fmt.Println(int64(rndDuration) / divNanoToMilli)
+	case "s":
+		const divNanoToSecond = 1000 * 1000 * 1000
+		fmt.Println(int64(rndDuration) / divNanoToSecond)
+	case "m":
+		const divNanoToMinute = 1000 * 1000 * 1000 * 60
+		fmt.Println(int64(rndDuration) / divNanoToMinute)
+	case "h":
+		const divNanoToHour = 1000 * 1000 * 1000 * 60 * 60
+		fmt.Println(int64(rndDuration) / divNanoToHour)
+	default:
+		return errInvalidFormat
+	}
+	return nil
+}
+
+func (p randomDuration) PrintFormatsHelp() {
+	fmt.Println(`Formats for duration parser:
+  --format ns              // nanoseconds, ex: 86400000000000
+  --format us              // microseconds, ex: 86400000000
+  --format ms              // milliseconds, ex: 86400000
+  --format s               // seconds, ex: 86400
+  --format m               // minutes, ex: 1440
+  --format h               // hours, ex: 24`)
 }
