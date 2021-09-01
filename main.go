@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	version = "v0.3.0"
+	version = "v0.4.0-rc"
 )
 
 func main() {
@@ -38,6 +38,7 @@ rng 10:30 10:15            // random time [15:30 - 10:15]
 rng 2038-01-19             // random date [now - 2038-01-19)
 rng 2021-08-30 2038-01-19  // random date [2021-08-30 - 2038-01-19)
 rng 123e4567-e89b-12d3-a456-426614174000 // random UUID [00000000-0000-0000-0000-000000000000 - 123e4567-e89b-12d3-a456-426614174000)
+rng -p arg foo bar moo boo // random arg [arg1, arg2, ..., argN]
 
 Flags:
 `, version)
@@ -74,54 +75,19 @@ Flags:
 		os.Exit(0)
 	}
 
-	var rndRange randomRange
+	seedRand()
 
-	if flags.parserName != "auto" {
-		var randomType = strings.TrimSpace(strings.ToLower(flags.parserName))
-		var rndParser randomParser
-		for _, parser := range parsers {
-			if parser.Name() == randomType {
-				rndParser = parser
-				break
-			}
-		}
-		if rndParser == nil {
-			fmt.Println(`err: for "-p, --parser" flag: no parser was matched:`, randomType)
-			fmt.Println("Available parsers:")
-			for _, parser := range parsers {
-				fmt.Println("-", parser.Name())
-			}
+	var rndRange randomRange
+	var parserName = strings.TrimSpace(strings.ToLower(flags.parserName))
+
+	switch parserName {
+	case "arg":
+		if pflag.NArg() == 0 {
+			fmt.Println("err: the 'arg' parser needs at least one non-flag argument")
 			os.Exit(2)
 		}
-		switch pflag.NArg() {
-		case 0:
-			rndRange = rndParser.Default()
-		case 1:
-			var argUpper = pflag.Arg(0)
-			var rndUpper randomUpper
-			var err error
-			rndUpper, err = rndParser.ParseUpper(argUpper)
-			if err == nil {
-				fmt.Println("err: failed to parse <max>:", err)
-				os.Exit(2)
-			}
-			rndRange = rndUpper.DefaultLower()
-		case 2:
-			var argLower = pflag.Arg(0)
-			var argUpper = pflag.Arg(1)
-			var err error
-			rndUpper, err := rndParser.ParseUpper(argUpper)
-			if err == nil {
-				fmt.Println("err: failed to parse <max>:", err)
-				os.Exit(2)
-			}
-			rndRange, err = rndUpper.ParseLower(argLower)
-			if err == nil {
-				fmt.Println("err: failed to parse <min>:", err)
-				os.Exit(2)
-			}
-		}
-	} else {
+		fmt.Println(pflag.Arg(rand.Intn(pflag.NArg())))
+	case "auto":
 		switch pflag.NArg() {
 		case 0:
 			rndRange = defaultRandomRange
@@ -160,16 +126,60 @@ Flags:
 				os.Exit(2)
 			}
 		}
+	default:
+		var rndParser randomParser
+		for _, parser := range parsers {
+			if parser.Name() == parserName {
+				rndParser = parser
+				break
+			}
+		}
+		if rndParser == nil {
+			fmt.Println(`err: for "-p, --parser" flag: no parser was matched:`, flags.parserName)
+			fmt.Println("Available parsers:")
+			for _, parser := range parsers {
+				fmt.Println("-", parser.Name())
+			}
+			os.Exit(2)
+		}
+		switch pflag.NArg() {
+		case 0:
+			rndRange = rndParser.Default()
+		case 1:
+			var argUpper = pflag.Arg(0)
+			var rndUpper randomUpper
+			var err error
+			rndUpper, err = rndParser.ParseUpper(argUpper)
+			if err == nil {
+				fmt.Println("err: failed to parse <max>:", err)
+				os.Exit(2)
+			}
+			rndRange = rndUpper.DefaultLower()
+		case 2:
+			var argLower = pflag.Arg(0)
+			var argUpper = pflag.Arg(1)
+			var err error
+			rndUpper, err := rndParser.ParseUpper(argUpper)
+			if err == nil {
+				fmt.Println("err: failed to parse <max>:", err)
+				os.Exit(2)
+			}
+			rndRange, err = rndUpper.ParseLower(argLower)
+			if err == nil {
+				fmt.Println("err: failed to parse <min>:", err)
+				os.Exit(2)
+			}
+		}
 	}
 
-	if rndRange.IsLowerLargerThanUpper() {
-		fmt.Println("err: <min> cannot be greater than <max>")
-		os.Exit(1)
+	if rndRange != nil {
+		if rndRange.IsLowerLargerThanUpper() {
+			fmt.Println("err: <min> cannot be greater than <max>")
+			os.Exit(1)
+		}
+
+		rndRange.PrintRandomValue()
 	}
-
-	seedRand()
-
-	rndRange.PrintRandomValue()
 }
 
 func seedRand() error {
