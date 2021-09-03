@@ -65,7 +65,7 @@ func (value randomIntValue) PrintRandomValue(format string) (string, error) {
 	}
 }
 
-func (p randomIntValue) PrintFormatsHelp() {
+func (p randomInt) PrintFormatsHelp() {
 	fmt.Println(`Formats for int parser:
   --format x               // hexadecimal, ex: c0ffee
   --format X               // hexadecimal, ex: C0FFEE

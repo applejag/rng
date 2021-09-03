@@ -24,6 +24,10 @@ func (p randomArg) Name() string {
 	return "arg"
 }
 
+func (p randomArg) PrintFormatsHelp() {
+	fmt.Println(`The arg parser does not support formats.`)
+}
+
 func (p randomArg) IsLowerLargerThanUpper() bool {
 	return false
 }
@@ -39,8 +43,4 @@ func (value randomArgValue) PrintRandomValue(format string) (string, error) {
 		return "", errInvalidFormat
 	}
 	return string(value), nil
-}
-
-func (value randomArgValue) PrintFormatsHelp() {
-	fmt.Println(`The arg parser does not support formats.`)
 }

@@ -59,7 +59,7 @@ func (value randomFloatValue) PrintRandomValue(format string) (string, error) {
 	return "", errInvalidFormat
 }
 
-func (p randomFloatValue) PrintFormatsHelp() {
+func (p randomFloat) PrintFormatsHelp() {
 	fmt.Println(`Formats for int parser:
   --format e               // scientific notation, ex: 1.23456e+8
   --format E               // scientific notation, ex: 1.23456E+8

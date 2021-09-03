@@ -50,6 +50,7 @@ Flags:
 		printFormats          []string
 		numberOfRandoms       uint
 		showHelp              bool
+		showHelpParserFormats string
 		showDebug             bool
 		showLicenseWarranty   bool
 		showLicenseConditions bool
@@ -61,11 +62,32 @@ Flags:
 	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
 	pflag.StringVarP(&flags.parserName, "parser", "p", "auto", "force parser")
 	pflag.StringSliceVarP(&flags.printFormats, "format", "f", nil, "use custom format(s), separated by comma")
+	pflag.StringVarP(&flags.showHelpParserFormats, "help-format", "F", "", "show formats available for parser")
 	pflag.UintVarP(&flags.numberOfRandoms, "count", "n", 1, "number of random values to output")
 	pflag.Parse()
 
 	if flags.showHelp {
 		pflag.Usage()
+		os.Exit(0)
+	}
+
+	if flags.showHelpParserFormats != "" {
+		var rndParser randomParser
+		for _, parser := range parsers {
+			if parser.Name() == flags.showHelpParserFormats {
+				rndParser = parser
+				break
+			}
+		}
+		if rndParser == nil {
+			fmt.Println(`err: for "-p, --parser" flag: no parser was matched:`, flags.showHelpParserFormats)
+			fmt.Println("Available parsers:")
+			for _, parser := range parsers {
+				fmt.Println("-", parser.Name())
+			}
+			os.Exit(2)
+		}
+		rndParser.PrintFormatsHelp()
 		os.Exit(0)
 	}
 
@@ -81,6 +103,7 @@ Flags:
 
 	var rndRange randomRange
 	var parserName = strings.TrimSpace(strings.ToLower(flags.parserName))
+	var rndParser randomParser
 
 	switch parserName {
 	case "arg":
@@ -89,16 +112,18 @@ Flags:
 			os.Exit(2)
 		}
 		rndRange = randomArg{}
+		rndParser = randomArg{}
 	case "auto":
 		switch pflag.NArg() {
 		case 0:
 			rndRange = defaultRandomRange
+			rndParser = defaultParser
 		case 1:
 			var argUpper = pflag.Arg(0)
 			var rndUpper randomUpper
 			var err error
-			for _, p := range parsers {
-				rndUpper, err = p.ParseUpper(argUpper)
+			for _, rndParser = range parsers {
+				rndUpper, err = rndParser.ParseUpper(argUpper)
 				if err == nil {
 					break
 				}
@@ -113,8 +138,8 @@ Flags:
 			var argUpper = pflag.Arg(1)
 			var rndUpper randomUpper
 			var err error
-			for _, p := range parsers {
-				rndUpper, err = p.ParseUpper(argUpper)
+			for _, rndParser = range parsers {
+				rndUpper, err = rndParser.ParseUpper(argUpper)
 				if err != nil {
 					continue
 				}
@@ -129,7 +154,6 @@ Flags:
 			}
 		}
 	default:
-		var rndParser randomParser
 		for _, parser := range parsers {
 			if parser.Name() == parserName {
 				rndParser = parser
@@ -186,7 +210,7 @@ Flags:
 		for i, format := range flags.printFormats {
 			if str, err := value.PrintRandomValue(format); err != nil {
 				fmt.Println("err:", err)
-				value.PrintFormatsHelp()
+				rndParser.PrintFormatsHelp()
 				os.Exit(1)
 			} else if i == 0 {
 				fmt.Print(str)

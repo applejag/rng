@@ -86,7 +86,7 @@ func (value randomUUIDValue) PrintRandomValue(format string) (string, error) {
 	}
 }
 
-func (value randomUUIDValue) PrintFormatsHelp() {
+func (p randomUUID) PrintFormatsHelp() {
 	fmt.Println(`Formats for UUID parser:
   --format uuid            // UUID, ex:
                            //  123e4567-e89b-12d3-a456-426614174000

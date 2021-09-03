@@ -78,7 +78,7 @@ func (value randomDurationValue) PrintRandomValue(format string) (string, error)
 	}
 }
 
-func (value randomDurationValue) PrintFormatsHelp() {
+func (p randomDuration) PrintFormatsHelp() {
 	fmt.Println(`Formats for duration parser:
   --format ns              // nanoseconds, ex: 86400000000000
   --format us              // microseconds, ex: 86400000000

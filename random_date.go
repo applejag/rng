@@ -68,7 +68,7 @@ func (value randomDateValue) PrintRandomValue(format string) (string, error) {
 	}
 }
 
-func (value randomDateValue) PrintFormatsHelp() {
+func (p randomDate) PrintFormatsHelp() {
 	fmt.Println(`Formats for date parser:
   Any Go time format https://pkg.go.dev/time#pkg-constants
   Such as:

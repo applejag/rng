@@ -72,7 +72,7 @@ func (value randomTimeValue) PrintRandomValue(format string) (string, error) {
 	}
 }
 
-func (value randomTimeValue) PrintFormatsHelp() {
+func (p randomTime) PrintFormatsHelp() {
 	fmt.Println(`Formats for time parser:
   Any Go time format https://pkg.go.dev/time#pkg-constants
   Such as:

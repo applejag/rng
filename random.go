@@ -11,6 +11,7 @@ type randomParser interface {
 	ParseUpper(value string) (randomUpper, error)
 	Default() randomRange
 	Name() string
+	PrintFormatsHelp()
 }
 
 type randomUpper interface {
@@ -25,7 +26,6 @@ type randomRange interface {
 
 type randomValue interface {
 	PrintRandomValue(format string) (string, error)
-	PrintFormatsHelp()
 }
 
 var parsers = []randomParser{
