@@ -14,7 +14,7 @@ $ go install github.com/jilleJr/rng@latest
 
 ```console
 $ rng --help
-rng v0.4.0  Copyright (C) 2021  Kalle Jillheden
+rng v0.5.0  Copyright (C) 2021  Kalle Jillheden
 This program comes with ABSOLUTELY NO WARRANTY; for details type 'rng --license-w'
 This is free software, and you are welcome to redistribute it
 under certain conditions; type '--license-c' for details.
@@ -38,11 +38,12 @@ rng 123e4567-e89b-12d3-a456-426614174000 // random UUID [00000000-0000-0000-0000
 rng -p arg arg1 arg2 ... argN // random arg [arg1, arg2, ..., argN]
 
 Flags:
-  -n, --count uint      number of random values to output (default 1)
-  -d, --debug           show additional info
-  -f, --format string   use custom format
-  -h, --help            show this help text
-      --license-c       show license conditions
-      --license-w       show license warranty
-  -p, --parser string   force parser (default "auto")
+  -n, --count uint           number of random values to output (default 1)
+  -d, --debug                show additional info
+  -f, --format strings       use custom format(s), separated by comma
+  -h, --help                 show this help text
+  -F, --help-format string   show formats available for parser
+      --license-c            show license conditions
+      --license-w            show license warranty
+  -p, --parser string        force parser (default "auto")
 ```
