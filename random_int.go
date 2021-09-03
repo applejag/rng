@@ -121,12 +121,19 @@ var intEnglishFormats = map[int64]string{
 }
 
 func englishFormatInt64(value int64) string {
+	var sb strings.Builder
+
+	if value < 0 {
+		sb.WriteString("negative")
+		value = -value
+	}
+
 	if formatted, ok := intEnglishFormats[value]; ok {
-		return formatted
+		writeWithSpace(&sb, formatted)
+		return sb.String()
 	}
 
 	var (
-		sb            strings.Builder
 		quintrillions = value / 1e18 // max size of int64 is at quintrillions
 		quadrillions  = value % 1e18 / 1e15
 		trillions     = value % 1e15 / 1e12
