@@ -38,7 +38,7 @@ func (p randomArg) CalcRandomValue() randomValue {
 
 type randomArgValue string
 
-func (value randomArgValue) PrintRandomValue(format string) (string, error) {
+func (value randomArgValue) Format(format string) (string, error) {
 	if format != "" {
 		return "", errInvalidFormat
 	}

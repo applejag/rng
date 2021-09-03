@@ -64,7 +64,7 @@ type randomTimeValue struct {
 	layout  timeLayout
 }
 
-func (value randomTimeValue) PrintRandomValue(format string) (string, error) {
+func (value randomTimeValue) Format(format string) (string, error) {
 	if format == "" {
 		return (value.rndTime.Format(value.layout.printLayout)), nil
 	} else {

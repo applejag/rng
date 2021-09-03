@@ -58,7 +58,7 @@ type randomUUIDValue struct {
 	format uuidFormat
 }
 
-func (value randomUUIDValue) PrintRandomValue(format string) (string, error) {
+func (value randomUUIDValue) Format(format string) (string, error) {
 	switch format {
 	case "":
 		switch value.format {

@@ -208,7 +208,7 @@ Flags:
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
 		value := rndRange.CalcRandomValue()
 		for i, format := range flags.printFormats {
-			if str, err := value.PrintRandomValue(format); err != nil {
+			if str, err := value.Format(format); err != nil {
 				fmt.Println("err:", err)
 				rndParser.PrintFormatsHelp()
 				os.Exit(1)

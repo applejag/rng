@@ -48,7 +48,7 @@ func (p randomFloat) CalcRandomValue() randomValue {
 	return randomFloatValue(lerpFloat64(p.lower, p.upper, rand.Float64()))
 }
 
-func (value randomFloatValue) PrintRandomValue(format string) (string, error) {
+func (value randomFloatValue) Format(format string) (string, error) {
 	if format == "" {
 		return fmt.Sprint(value), nil
 	}

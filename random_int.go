@@ -50,7 +50,7 @@ func (p randomInt) CalcRandomValue() randomValue {
 
 type randomIntValue int64
 
-func (value randomIntValue) PrintRandomValue(format string) (string, error) {
+func (value randomIntValue) Format(format string) (string, error) {
 	switch format {
 	case "":
 		return fmt.Sprint(value), nil

@@ -25,7 +25,7 @@ type randomRange interface {
 }
 
 type randomValue interface {
-	PrintRandomValue(format string) (string, error)
+	Format(format string) (string, error)
 }
 
 var parsers = []randomParser{

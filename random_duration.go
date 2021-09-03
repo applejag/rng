@@ -51,7 +51,7 @@ func (p randomDuration) CalcRandomValue() randomValue {
 
 type randomDurationValue time.Duration
 
-func (value randomDurationValue) PrintRandomValue(format string) (string, error) {
+func (value randomDurationValue) Format(format string) (string, error) {
 	durValue := time.Duration(value)
 	switch format {
 	case "":

@@ -60,7 +60,7 @@ type randomDateValue struct {
 	layout  timeLayout
 }
 
-func (value randomDateValue) PrintRandomValue(format string) (string, error) {
+func (value randomDateValue) Format(format string) (string, error) {
 	if format == "" {
 		return (value.rndDate.Format(value.layout.printLayout)), nil
 	} else {
