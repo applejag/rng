@@ -205,6 +205,10 @@ Flags:
 
 	seedRand()
 
+	if len(flags.printFormats) == 0 {
+		flags.printFormats = append(flags.printFormats, "")
+	}
+
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
 		value := rndRange.CalcRandomValue()
 		var sb strings.Builder

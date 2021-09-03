@@ -55,24 +55,24 @@ func (value randomDurationValue) Format(format string) (string, error) {
 	durValue := time.Duration(value)
 	switch format {
 	case "":
-		return fmt.Sprintln(durValue), nil
+		return fmt.Sprint(durValue), nil
 	case "ns":
-		return fmt.Sprintln(int64(durValue)), nil
+		return fmt.Sprint(int64(durValue)), nil
 	case "us":
 		const divNanoToMicro = 1000
-		return fmt.Sprintln(int64(durValue) / divNanoToMicro), nil
+		return fmt.Sprint(int64(durValue) / divNanoToMicro), nil
 	case "ms":
 		const divNanoToMilli = 1000 * 1000
-		return fmt.Sprintln(int64(durValue) / divNanoToMilli), nil
+		return fmt.Sprint(int64(durValue) / divNanoToMilli), nil
 	case "s":
 		const divNanoToSecond = 1000 * 1000 * 1000
-		return fmt.Sprintln(int64(durValue) / divNanoToSecond), nil
+		return fmt.Sprint(int64(durValue) / divNanoToSecond), nil
 	case "m":
 		const divNanoToMinute = 1000 * 1000 * 1000 * 60
-		return fmt.Sprintln(int64(durValue) / divNanoToMinute), nil
+		return fmt.Sprint(int64(durValue) / divNanoToMinute), nil
 	case "h":
 		const divNanoToHour = 1000 * 1000 * 1000 * 60 * 60
-		return fmt.Sprintln(int64(durValue) / divNanoToHour), nil
+		return fmt.Sprint(int64(durValue) / divNanoToHour), nil
 	default:
 		return "", errInvalidFormat
 	}
