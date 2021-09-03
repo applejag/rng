@@ -73,8 +73,9 @@ Flags:
 
 	if flags.showHelpParserFormats != "" {
 		var rndParser randomParser
+		var parserName = strings.TrimSpace(strings.ToLower(flags.showHelpParserFormats))
 		for _, parser := range parsers {
-			if parser.Name() == flags.showHelpParserFormats {
+			if parser.Name() == parserName {
 				rndParser = parser
 				break
 			}
