@@ -207,18 +207,20 @@ Flags:
 
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
 		value := rndRange.CalcRandomValue()
+		var sb strings.Builder
 		for i, format := range flags.printFormats {
-			if str, err := value.Format(format); err != nil {
+			str, err := value.Format(format)
+			if err != nil {
 				fmt.Println("err:", err)
 				rndParser.PrintFormatsHelp()
 				os.Exit(1)
-			} else if i == 0 {
-				fmt.Print(str)
-			} else {
-				fmt.Print(", ", str)
 			}
+			if i > 0 {
+				sb.WriteString(", ")
+			}
+			sb.WriteString(str)
 		}
-		fmt.Println()
+		fmt.Println(sb.String())
 	}
 }
 
