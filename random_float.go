@@ -42,21 +42,24 @@ func (p randomFloat) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomFloat) PrintRandomValue(format string) error {
-	var value = lerpFloat64(p.lower, p.upper, rand.Float64())
+type randomFloatValue float64
+
+func (p randomFloat) CalcRandomValue() randomValue {
+	return randomFloatValue(lerpFloat64(p.lower, p.upper, rand.Float64()))
+}
+
+func (value randomFloatValue) PrintRandomValue(format string) (string, error) {
 	if format == "" {
-		fmt.Println(value)
-		return nil
+		return fmt.Sprint(value), nil
 	}
 	fmtFormat, hasFormat := floatFormats[format]
 	if hasFormat {
-		fmt.Printf(fmtFormat, value)
-		return nil
+		return fmt.Sprintf(fmtFormat, value), nil
 	}
-	return errInvalidFormat
+	return "", errInvalidFormat
 }
 
-func (p randomFloat) PrintFormatsHelp() {
+func (p randomFloatValue) PrintFormatsHelp() {
 	fmt.Println(`Formats for int parser:
   --format e               // scientific notation, ex: 1.23456e+8
   --format E               // scientific notation, ex: 1.23456E+8

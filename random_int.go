@@ -10,6 +10,7 @@ import (
 type randomInt struct {
 	upper int64
 	lower int64
+	value int64
 }
 
 func (p randomInt) Name() string {
@@ -43,26 +44,28 @@ func (p randomInt) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomInt) PrintRandomValue(format string) error {
-	var value = p.lower + rand.Int63n(p.upper-p.lower)
+func (p randomInt) CalcRandomValue() randomValue {
+	return randomIntValue(p.lower + rand.Int63n(p.upper-p.lower))
+}
+
+type randomIntValue int64
+
+func (value randomIntValue) PrintRandomValue(format string) (string, error) {
 	switch format {
 	case "":
-		fmt.Println(value)
-		return nil
+		return fmt.Sprint(value), nil
 	case "english":
-		fmt.Println(englishFormatInt64(value))
-		return nil
+		return englishFormatInt64(int64(value)), nil
 	default:
 		fmtFormat, hasFormat := intFormats[format]
 		if hasFormat {
-			fmt.Printf(fmtFormat, value)
-			return nil
+			return fmt.Sprintf(fmtFormat, value), nil
 		}
-		return errInvalidFormat
+		return "", errInvalidFormat
 	}
 }
 
-func (p randomInt) PrintFormatsHelp() {
+func (p randomIntValue) PrintFormatsHelp() {
 	fmt.Println(`Formats for int parser:
   --format x               // hexadecimal, ex: c0ffee
   --format X               // hexadecimal, ex: C0FFEE

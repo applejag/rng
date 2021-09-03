@@ -45,19 +45,30 @@ func (p randomDate) IsLowerLargerThanUpper() bool {
 	return p.lower.After(p.upper)
 }
 
-func (p randomDate) PrintRandomValue(format string) error {
+func (p randomDate) CalcRandomValue() randomValue {
 	diffInt := int64(p.upper.Sub(p.lower))
 	rndDiff := time.Duration(rand.Int63n(diffInt))
 	rndDate := p.lower.Add(rndDiff)
-	if format == "" {
-		fmt.Println(rndDate.Format(p.layout.printLayout))
-	} else {
-		fmt.Println(rndDate.Format(format))
+	return randomDateValue{
+		rndDate: rndDate,
+		layout:  p.layout,
 	}
-	return nil
 }
 
-func (p randomDate) PrintFormatsHelp() {
+type randomDateValue struct {
+	rndDate time.Time
+	layout  timeLayout
+}
+
+func (value randomDateValue) PrintRandomValue(format string) (string, error) {
+	if format == "" {
+		return (value.rndDate.Format(value.layout.printLayout)), nil
+	} else {
+		return (value.rndDate.Format(format)), nil
+	}
+}
+
+func (value randomDateValue) PrintFormatsHelp() {
 	fmt.Println(`Formats for date parser:
   Any Go time format https://pkg.go.dev/time#pkg-constants
   Such as:

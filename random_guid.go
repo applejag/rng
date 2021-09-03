@@ -45,37 +45,48 @@ func (p randomUUID) IsLowerLargerThanUpper() bool {
 	return p.lower.GreaterThan(p.upper)
 }
 
-func (p randomUUID) PrintRandomValue(format string) error {
+func (p randomUUID) CalcRandomValue() randomValue {
 	var value = uuid.NewRandomRange(p.lower, p.upper)
-	switch format {
-	case "":
-		switch p.format {
-		case uuidFormatGUID:
-			fmt.Printf("{%s}\n", value)
-		case uuidFormatURN:
-			fmt.Printf("urn:uuid:%s\n", value)
-		default:
-			fmt.Println(value)
-		}
-	case "uuid":
-		fmt.Println(value)
-	case "UUID":
-		fmt.Println(strings.ToUpper(value.String()))
-	case "urn":
-		fmt.Printf("urn:uuid:%s\n", value)
-	case "URN":
-		fmt.Printf("URN:UUID:%s\n", strings.ToUpper(value.String()))
-	case "guid":
-		fmt.Printf("{%s}\n", value)
-	case "GUID":
-		fmt.Printf("{%s}\n", strings.ToUpper(value.String()))
-	default:
-		return errInvalidFormat
+	return randomUUIDValue{
+		uuid:   value,
+		format: p.format,
 	}
-	return nil
 }
 
-func (p randomUUID) PrintFormatsHelp() {
+type randomUUIDValue struct {
+	uuid   uuid.UUID
+	format uuidFormat
+}
+
+func (value randomUUIDValue) PrintRandomValue(format string) (string, error) {
+	switch format {
+	case "":
+		switch value.format {
+		case uuidFormatGUID:
+			return fmt.Sprintf("{%s}\n", value.uuid), nil
+		case uuidFormatURN:
+			return fmt.Sprintf("urn:uuid:%s\n", value.uuid), nil
+		default:
+			return fmt.Sprintln(value.uuid), nil
+		}
+	case "uuid":
+		return fmt.Sprintln(value.uuid), nil
+	case "UUID":
+		return fmt.Sprintln(strings.ToUpper(value.uuid.String())), nil
+	case "urn":
+		return fmt.Sprintf("urn:uuid:%s\n", value.uuid), nil
+	case "URN":
+		return fmt.Sprintf("URN:UUID:%s\n", strings.ToUpper(value.uuid.String())), nil
+	case "guid":
+		return fmt.Sprintf("{%s}\n", value.uuid), nil
+	case "GUID":
+		return fmt.Sprintf("{%s}\n", strings.ToUpper(value.uuid.String())), nil
+	default:
+		return "", errInvalidFormat
+	}
+}
+
+func (value randomUUIDValue) PrintFormatsHelp() {
 	fmt.Println(`Formats for UUID parser:
   --format uuid            // UUID, ex:
                            //  123e4567-e89b-12d3-a456-426614174000

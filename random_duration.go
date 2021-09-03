@@ -42,37 +42,43 @@ func (p randomDuration) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomDuration) PrintRandomValue(format string) error {
+func (p randomDuration) CalcRandomValue() randomValue {
 	upperInt := int64(p.upper)
 	lowerInt := int64(p.lower)
 	rndDuration := p.lower + time.Duration(rand.Int63n(upperInt-lowerInt))
-	switch format {
-	case "":
-		fmt.Println(rndDuration)
-	case "ns":
-		fmt.Println(int64(rndDuration))
-	case "us":
-		const divNanoToMicro = 1000
-		fmt.Println(int64(rndDuration) / divNanoToMicro)
-	case "ms":
-		const divNanoToMilli = 1000 * 1000
-		fmt.Println(int64(rndDuration) / divNanoToMilli)
-	case "s":
-		const divNanoToSecond = 1000 * 1000 * 1000
-		fmt.Println(int64(rndDuration) / divNanoToSecond)
-	case "m":
-		const divNanoToMinute = 1000 * 1000 * 1000 * 60
-		fmt.Println(int64(rndDuration) / divNanoToMinute)
-	case "h":
-		const divNanoToHour = 1000 * 1000 * 1000 * 60 * 60
-		fmt.Println(int64(rndDuration) / divNanoToHour)
-	default:
-		return errInvalidFormat
-	}
-	return nil
+	return randomDurationValue(rndDuration)
 }
 
-func (p randomDuration) PrintFormatsHelp() {
+type randomDurationValue time.Duration
+
+func (value randomDurationValue) PrintRandomValue(format string) (string, error) {
+	durValue := time.Duration(value)
+	switch format {
+	case "":
+		return fmt.Sprintln(durValue), nil
+	case "ns":
+		return fmt.Sprintln(int64(durValue)), nil
+	case "us":
+		const divNanoToMicro = 1000
+		return fmt.Sprintln(int64(durValue) / divNanoToMicro), nil
+	case "ms":
+		const divNanoToMilli = 1000 * 1000
+		return fmt.Sprintln(int64(durValue) / divNanoToMilli), nil
+	case "s":
+		const divNanoToSecond = 1000 * 1000 * 1000
+		return fmt.Sprintln(int64(durValue) / divNanoToSecond), nil
+	case "m":
+		const divNanoToMinute = 1000 * 1000 * 1000 * 60
+		return fmt.Sprintln(int64(durValue) / divNanoToMinute), nil
+	case "h":
+		const divNanoToHour = 1000 * 1000 * 1000 * 60 * 60
+		return fmt.Sprintln(int64(durValue) / divNanoToHour), nil
+	default:
+		return "", errInvalidFormat
+	}
+}
+
+func (value randomDurationValue) PrintFormatsHelp() {
 	fmt.Println(`Formats for duration parser:
   --format ns              // nanoseconds, ex: 86400000000000
   --format us              // microseconds, ex: 86400000000

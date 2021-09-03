@@ -47,7 +47,7 @@ Flags:
 
 	var flags struct {
 		parserName            string
-		printFormat           string
+		printFormats          []string
 		numberOfRandoms       uint
 		showHelp              bool
 		showDebug             bool
@@ -60,7 +60,7 @@ Flags:
 	pflag.BoolVarP(&flags.showLicenseConditions, "license-c", "", false, "show license conditions")
 	pflag.BoolVarP(&flags.showLicenseWarranty, "license-w", "", false, "show license warranty")
 	pflag.StringVarP(&flags.parserName, "parser", "p", "auto", "force parser")
-	pflag.StringVarP(&flags.printFormat, "format", "f", "", "use custom format")
+	pflag.StringSliceVarP(&flags.printFormats, "format", "f", nil, "use custom format(s), separated by comma")
 	pflag.UintVarP(&flags.numberOfRandoms, "count", "n", 1, "number of random values to output")
 	pflag.Parse()
 
@@ -182,11 +182,19 @@ Flags:
 	seedRand()
 
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
-		if err := rndRange.PrintRandomValue(flags.printFormat); err != nil {
-			fmt.Println("err:", err)
-			rndRange.PrintFormatsHelp()
-			os.Exit(1)
+		value := rndRange.CalcRandomValue()
+		for i, format := range flags.printFormats {
+			if str, err := value.PrintRandomValue(format); err != nil {
+				fmt.Println("err:", err)
+				value.PrintFormatsHelp()
+				os.Exit(1)
+			} else if i == 0 {
+				fmt.Print(str)
+			} else {
+				fmt.Print(", ", str)
+			}
 		}
+		fmt.Println()
 	}
 }
 

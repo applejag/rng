@@ -20,11 +20,16 @@ type randomUpper interface {
 
 type randomRange interface {
 	IsLowerLargerThanUpper() bool
-	PrintRandomValue(format string) error
+	CalcRandomValue() randomValue
+}
+
+type randomValue interface {
+	PrintRandomValue(format string) (string, error)
 	PrintFormatsHelp()
 }
 
 var parsers = []randomParser{
+	randomArg{},
 	randomInt{},
 	randomFloat{},
 	randomDuration{},
