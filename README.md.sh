@@ -32,6 +32,13 @@ go run "$SCRIPT_PATH" --help >> README.md 2>> README.md
 cat <<"EOF" >> README.md
 ```
 
+## Sample use-cases
+
+```sh
+# Opens a random episode from musicforprogramming.net
+alias musicforprogramming='xdg-open "https://musicforprogramming.net/?$(rng 1 63 -f english | tr -d -)"'
+```
+
 ## Formats
 
 EOF

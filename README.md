@@ -48,6 +48,13 @@ Flags:
   -p, --parser string        force parser (default "auto")
 ```
 
+## Sample use-cases
+
+```sh
+# Opens a random episode from musicforprogramming.net
+alias musicforprogramming='xdg-open "https://musicforprogramming.net/?$(rng 1 63 -f english | tr -d -)"'
+```
+
 ## Formats
 
 ### Parser: arg
