@@ -10,7 +10,7 @@ import (
 	"lukechampine.com/uint128"
 )
 
-var ErrInvalid = errors.New("guid: invalid format")
+var ErrInvalid = errors.New("uuid: invalid format")
 
 const mask6Bytes uint64 = 0x0000FFFFFFFFFFFF
 const mask4Bytes uint64 = 0x00000000FFFFFFFF
@@ -23,13 +23,13 @@ type UUID struct {
 var Min = UUID{}
 var Max = UUID{int: uint128.Uint128{Lo: math.MaxUint64, Hi: math.MaxUint64}}
 
-func (guid UUID) String() string {
+func (uuid UUID) String() string {
 	var (
-		timeLow          = (guid.int.Hi >> 32) & mask4Bytes
-		timeMid          = (guid.int.Hi >> 16) & mask2Bytes
-		timeHiAndVersion = guid.int.Hi & mask2Bytes
-		clock            = (guid.int.Lo >> 48) & mask2Bytes
-		node             = guid.int.Lo & mask6Bytes
+		timeLow          = (uuid.int.Hi >> 32) & mask4Bytes
+		timeMid          = (uuid.int.Hi >> 16) & mask2Bytes
+		timeHiAndVersion = uuid.int.Hi & mask2Bytes
+		clock            = (uuid.int.Lo >> 48) & mask2Bytes
+		node             = uuid.int.Lo & mask6Bytes
 	)
 	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
 		timeLow,
@@ -39,8 +39,8 @@ func (guid UUID) String() string {
 		node)
 }
 
-func (guid UUID) GreaterThan(value UUID) bool {
-	return guid.int.Cmp(value.int) > 0
+func (uuid UUID) GreaterThan(value UUID) bool {
+	return uuid.int.Cmp(value.int) > 0
 }
 
 func NewRandom() UUID {

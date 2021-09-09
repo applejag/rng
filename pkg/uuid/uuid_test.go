@@ -25,8 +25,8 @@ func TestString(t *testing.T) {
 	const hi uint64 = 0x123456789abcdef1
 	const lo uint64 = 0x23456789abcdef12
 	const want = "12345678-9abc-def1-2345-6789abcdef12"
-	guid := UUID{int: uint128.Uint128{Hi: hi, Lo: lo}}
-	got := guid.String()
+	value := UUID{int: uint128.Uint128{Hi: hi, Lo: lo}}
+	got := value.String()
 	if got != want {
 		t.Errorf("want: %s, got: %s", want, got)
 	}
