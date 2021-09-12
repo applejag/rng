@@ -50,12 +50,43 @@ Flags:
 
 ## Sample use-cases
 
-```sh
+### Bash/Zsh
+
+```bash
 # Opens a random episode from musicforprogramming.net
 alias musicforprogramming='xdg-open "https://musicforprogramming.net/?$(rng 1 63 -f english | tr -d -)"'
 ```
 
+### PowerShell
+
+```powershell
+# Opens a random episode from musicforprogramming.net
+function musicforprogramming { start "https://musicforprogramming.net/?$((rng 1 63 -f english).Replace('-',''))" }
+```
+
 ## Formats
+
+### Parser: UUID
+
+```console
+$ rng --help-format UUID
+Formats for UUID parser:
+  --format uuid            // UUID, ex:
+                           //  123e4567-e89b-12d3-a456-426614174000
+  --format UUID            // UUID, ex:
+                           //  123E4567-E89B-12D3-A456-426614174000
+
+  --format urn             // Uniform Resource Name, ex:
+                           //  urn:uuid:123e4567-e89b-12d3-a456-426614174000
+  --format URN             // Uniform Resource Name, ex:
+                           //  URN:UUID:123E4567-E89B-12D3-A456-426614174000
+
+  --format GUID            // Microsoft GUID, ex:
+                           //  {123E4567-E89B-12D3-A456-426614174000}
+  --format guid            // Microsoft GUID, ex:
+                           //  {123e4567-e89b-12d3-a456-426614174000}
+
+```
 
 ### Parser: arg
 
@@ -130,28 +161,6 @@ Formats for time parser:
   Such as:
   --format 15h04m          // ex: 19h33m
   --format 3PM             // ex: 7PM
-
-```
-
-### Parser: UUID
-
-```console
-$ rng --help-format UUID
-Formats for UUID parser:
-  --format uuid            // UUID, ex:
-                           //  123e4567-e89b-12d3-a456-426614174000
-  --format UUID            // UUID, ex:
-                           //  123E4567-E89B-12D3-A456-426614174000
-
-  --format urn             // Uniform Resource Name, ex:
-                           //  urn:uuid:123e4567-e89b-12d3-a456-426614174000
-  --format URN             // Uniform Resource Name, ex:
-                           //  URN:UUID:123E4567-E89B-12D3-A456-426614174000
-
-  --format GUID            // Microsoft GUID, ex:
-                           //  {123E4567-E89B-12D3-A456-426614174000}
-  --format guid            // Microsoft GUID, ex:
-                           //  {123e4567-e89b-12d3-a456-426614174000}
 
 ```
 

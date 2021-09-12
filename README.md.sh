@@ -34,9 +34,18 @@ cat <<"EOF" >> README.md
 
 ## Sample use-cases
 
-```sh
+### Bash/Zsh
+
+```bash
 # Opens a random episode from musicforprogramming.net
 alias musicforprogramming='xdg-open "https://musicforprogramming.net/?$(rng 1 63 -f english | tr -d -)"'
+```
+
+### PowerShell
+
+```powershell
+# Opens a random episode from musicforprogramming.net
+function musicforprogramming { start "https://musicforprogramming.net/?$((rng 1 63 -f english).Replace('-',''))" }
 ```
 
 ## Formats
