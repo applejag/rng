@@ -21,6 +21,8 @@ SPDX-License-Identifier: CC0-1.0
 
 # rng - Random number generator CLI
 
+[![REUSE status](https://api.reuse.software/badge/github.com/jilleJr/rng)](https://api.reuse.software/info/github.com/jilleJr/rng)
+
 I needed a random number generator. I wrote this super-simple tool.
 
 ## Install
