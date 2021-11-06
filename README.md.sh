@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 
+# SPDX-FileCopyrightText: 2021 Kalle Jillheden
+#
+# SPDX-License-Identifier: CC0-1.0
+
 set -eo pipefail
 
 SCRIPT_PATH="$(dirname $0)"
 
 list_parsers() {
-	go run "$SCRIPT_PATH" --help 2>&1 | grep -oP '// random \K\w*' | sort -u
+	go run "$SCRIPT_PATH" --help 2>&1 | grep -o '// random \w*' | awk '{print $3}' | sort -u
 }
 
 cat <<"EOF" > README.md
+<!--
+SPDX-FileCopyrightText: 2021 Kalle Jillheden
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # rng - Random number generator CLI
 
 I needed a random number generator. I wrote this super-simple tool.
@@ -55,8 +65,8 @@ EOF
 for PARSER in $(list_parsers); do
 	echo "### Parser: $PARSER" >> README.md
 	echo '' >> README.md
-  echo '```console' >> README.md
-  echo "\$ rng --help-format $PARSER" >> README.md
+	echo '```console' >> README.md
+	echo "\$ rng --help-format $PARSER" >> README.md
 	go run "$SCRIPT_PATH" --help-format "$PARSER" >> README.md 2>> README.md
 	echo '' >> README.md
 	echo '```' >> README.md
@@ -67,5 +77,7 @@ cat <<"EOF" >> README.md
 ## License
 
 Written and maintained by [@jilleJr](https://github.com/jilleJr).
-Licensed under GNU-GPL v3. See [LICENSE](./LICENSE).
+Licensed under the GNU GPL 3.0 or later, or the CC0 1.0, depending on the file.
+
+This repository is [REUSE](https://reuse.software/) compliant.
 EOF

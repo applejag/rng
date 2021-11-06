@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Kalle Jillheden
+//
+// SPDX-License-Identifier: CC0-1.0
+
 module github.com/jilleJr/rng
 
 go 1.16

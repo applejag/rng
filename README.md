@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021 Kalle Jillheden
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # rng - Random number generator CLI
 
 I needed a random number generator. I wrote this super-simple tool.
@@ -167,4 +173,6 @@ Formats for time parser:
 ## License
 
 Written and maintained by [@jilleJr](https://github.com/jilleJr).
-Licensed under GNU-GPL v3. See [LICENSE](./LICENSE).
+Licensed under the GNU GPL 3.0 or later, or the CC0 1.0, depending on the file.
+
+This repository is [REUSE](https://reuse.software/) compliant.
