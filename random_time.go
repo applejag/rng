@@ -65,9 +65,9 @@ func (p randomTime) IsLowerLargerThanUpper() bool {
 	return p.lower.After(p.upper)
 }
 
-func (p randomTime) CalcRandomValue() randomValue {
+func (p randomTime) CalcRandomValue(rnd *rand.Rand) randomValue {
 	diffInt := int64(p.upper.Sub(p.lower))
-	rndDiff := time.Duration(rand.Int63n(diffInt))
+	rndDiff := time.Duration(rnd.Int63n(diffInt))
 	rndTime := p.lower.Add(rndDiff)
 	return randomTimeValue{
 		rndTime: rndTime,

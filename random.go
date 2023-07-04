@@ -18,6 +18,7 @@ package main
 
 import (
 	"errors"
+	"math/rand"
 )
 
 var errMinCannotBeGreaterThanMax = errors.New("<min> cannot be greater than <max>")
@@ -37,7 +38,7 @@ type randomUpper interface {
 
 type randomRange interface {
 	IsLowerLargerThanUpper() bool
-	CalcRandomValue() randomValue
+	CalcRandomValue(rnd *rand.Rand) randomValue
 }
 
 type randomValue interface {
@@ -55,7 +56,4 @@ var parsers = []randomParser{
 }
 
 var defaultParser randomParser = randomInt{}
-var defaultRandomRange randomRange = randomInt{
-	upper: 10,
-	lower: 0,
-}
+var defaultRandomRange randomRange = randomInt{}.Default()

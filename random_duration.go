@@ -58,10 +58,10 @@ func (p randomDuration) IsLowerLargerThanUpper() bool {
 	return p.lower > p.upper
 }
 
-func (p randomDuration) CalcRandomValue() randomValue {
+func (p randomDuration) CalcRandomValue(rnd *rand.Rand) randomValue {
 	upperInt := int64(p.upper)
 	lowerInt := int64(p.lower)
-	rndDuration := p.lower + time.Duration(rand.Int63n(upperInt-lowerInt))
+	rndDuration := p.lower + time.Duration(rnd.Int63n(upperInt-lowerInt))
 	return randomDurationValue(rndDuration)
 }
 

@@ -48,8 +48,8 @@ func (p randomArg) IsLowerLargerThanUpper() bool {
 	return false
 }
 
-func (p randomArg) CalcRandomValue() randomValue {
-	return randomArgValue(pflag.Arg(rand.Intn(pflag.NArg())))
+func (p randomArg) CalcRandomValue(rnd *rand.Rand) randomValue {
+	return randomArgValue(pflag.Arg(rnd.Intn(pflag.NArg())))
 }
 
 type randomArgValue string

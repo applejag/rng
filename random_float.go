@@ -60,8 +60,8 @@ func (p randomFloat) IsLowerLargerThanUpper() bool {
 
 type randomFloatValue float64
 
-func (p randomFloat) CalcRandomValue() randomValue {
-	return randomFloatValue(lerpFloat64(p.lower, p.upper, rand.Float64()))
+func (p randomFloat) CalcRandomValue(rnd *rand.Rand) randomValue {
+	return randomFloatValue(lerpFloat64(p.lower, p.upper, rnd.Float64()))
 }
 
 func (value randomFloatValue) Format(format string) (string, error) {

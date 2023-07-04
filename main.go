@@ -220,14 +220,18 @@ Flags:
 		os.Exit(1)
 	}
 
-	seedRand()
+	rnd, err := seedRand()
+	if err != nil {
+		fmt.Printf("err: failed to seed the random generator: %s\n", err)
+		os.Exit(1)
+	}
 
 	if len(flags.printFormats) == 0 {
 		flags.printFormats = append(flags.printFormats, "")
 	}
 
 	for i := uint(0); i < flags.numberOfRandoms; i++ {
-		value := rndRange.CalcRandomValue()
+		value := rndRange.CalcRandomValue(rnd)
 		var sb strings.Builder
 		for i, format := range flags.printFormats {
 			str, err := value.Format(format)
@@ -245,12 +249,12 @@ Flags:
 	}
 }
 
-func seedRand() error {
+func seedRand() (*rand.Rand, error) {
 	b := make([]byte, 8)
 	if _, err := crand.Read(b); err != nil {
-		return fmt.Errorf("failed to create crypto seed: %w", err)
+		return nil, fmt.Errorf("failed to create crypto seed: %w", err)
 	}
 	seed := binary.BigEndian.Uint64(b)
-	rand.Seed(int64(seed))
-	return nil
+	rnd := rand.New(rand.NewSource(int64(seed)))
+	return rnd, nil
 }

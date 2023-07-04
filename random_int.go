@@ -18,15 +18,15 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	"math/rand"
-	"strconv"
 	"strings"
 )
 
 type randomInt struct {
-	upper int64
-	lower int64
-	value int64
+	upper *big.Int
+	lower *big.Int
+	value *big.Int
 }
 
 func (p randomInt) Name() string {
@@ -34,48 +34,62 @@ func (p randomInt) Name() string {
 }
 
 func (p randomInt) ParseUpper(value string) (randomUpper, error) {
-	var err error
-	p.upper, err = strconv.ParseInt(value, 10, 64)
-	return p, err
+	var ok bool
+	p.upper, ok = big.NewInt(0).SetString(value, 10)
+	if !ok {
+		return nil, fmt.Errorf("cannot parse as integer: %q", value)
+	}
+	return p, nil
 }
 
 func (p randomInt) Default() randomRange {
-	p.upper = 10
-	p.lower = 0
+	p.upper = big.NewInt(10)
+	p.lower = big.NewInt(0)
 	return p
 }
 
 func (p randomInt) ParseLower(value string) (randomRange, error) {
-	var err error
-	p.lower, err = strconv.ParseInt(value, 10, 64)
-	return p, err
+	var ok bool
+	p.lower, ok = big.NewInt(0).SetString(value, 10)
+	if !ok {
+		return nil, fmt.Errorf("cannot parse as integer: %q", value)
+	}
+	return p, nil
 }
 
 func (p randomInt) DefaultLower() randomRange {
-	p.lower = 0
+	p.lower = big.NewInt(0)
 	return p
 }
 
 func (p randomInt) IsLowerLargerThanUpper() bool {
-	return p.lower > p.upper
+	return p.lower.Cmp(p.upper) > 0
 }
 
-func (p randomInt) CalcRandomValue() randomValue {
-	return randomIntValue(p.lower + rand.Int63n(p.upper-p.lower))
+func (p randomInt) CalcRandomValue(rnd *rand.Rand) randomValue {
+	n := &big.Int{}
+	n.Rand(rnd, big.NewInt(0).Add(p.upper, p.lower))
+	n.Add(n, p.lower)
+	return (*randomIntValue)(n)
 }
 
-type randomIntValue int64
+type randomIntValue big.Int
 
-func (value randomIntValue) Format(format string) (string, error) {
+func (value *randomIntValue) Format(format string) (string, error) {
+	bigInt := (*big.Int)(value)
 	switch format {
 	case "":
-		return fmt.Sprint(value), nil
+		return fmt.Sprint(bigInt), nil
 	case "english":
-		return englishFormatInt64(int64(value)), nil
+		if bigInt.IsInt64() {
+			return englishFormatInt64(bigInt.Int64()), nil
+		} else {
+			return "", fmt.Errorf("number is too big to be converted into english: %s", bigInt)
+		}
 	default:
 		fmtFormat, hasFormat := intFormats[format]
 		if hasFormat {
-			return fmt.Sprintf(fmtFormat, value), nil
+			return fmt.Sprintf(fmtFormat, bigInt), nil
 		}
 		return "", errInvalidFormat
 	}

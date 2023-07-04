@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 
 	"github.com/jilleJr/rng/pkg/uuid"
@@ -61,7 +62,7 @@ func (p randomUUID) IsLowerLargerThanUpper() bool {
 	return p.lower.GreaterThan(p.upper)
 }
 
-func (p randomUUID) CalcRandomValue() randomValue {
+func (p randomUUID) CalcRandomValue(rnd *rand.Rand) randomValue {
 	var value = uuid.NewRandomRange(p.lower, p.upper)
 	return randomUUIDValue{
 		uuid:   value,
